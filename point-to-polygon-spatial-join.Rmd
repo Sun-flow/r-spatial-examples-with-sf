@@ -46,13 +46,24 @@ ggplot() +
 
 ### The easiest way to link polygon attributes to the point locations is using `st_join`, then output in a pretty funky plot:
 ```{r run_join}
-points_with_polygonID <- st_join(points_sf,
-                                 polygons_sf) %>% 
+points_with_polygonID <- points_sf %>% 
+  # default join uses st_intersect to identify matching features
+  st_join(polygons_sf) %>% 
+  # st_within would also work for linking points to polygons
+  #st_join(polygons_sf, join = st_within) %>% 
   mutate(point_poly_id = paste(point_id, polygon_id, sep = ' in '))
 
 ggplot() +
   geom_sf(aes(fill = polygon_id), data = polygons_sf) +
   geom_sf_label(aes(label = point_poly_id), data = points_with_polygonID) +
   labs(title = 'Example polygons and sample points as labels')
+```
+
+### finally, how many points are within each polygon?
+```{r points_in_polygons}
+points_with_polygonID %>% 
+  # since this is a table summary, not a spatial one, we need to drop spatial info
+  st_drop_geometry() %>% 
+  count(polygon_id)
 ```
 

@@ -1750,19 +1750,19 @@ summary {
 
 <!-- rnb-text-begin -->
 <p>Examples here partially adapted from one of the vignettes in the <code>sf</code> package: <a href="https://r-spatial.github.io/sf/articles/sf3.html">3. Manipulating Simple Feature Geometries</a></p>
+<p>Goal: use <code>sf::st_join</code> to attach polygon info to points located inside</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkIHR3byBuZWNlc3NhcnkgcGFja2FnZXNcbmxpYnJhcnkodGlkeXZlcnNlKVxuYGBgIn0= -->
-<pre class="r"><code># Load two necessary packages
-library(tidyverse)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzZilcbmBgYCJ9 -->
-<pre class="r"><code>library(sf)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkIHR3byBuZWNlc3NhcnkgcGFja2FnZXMgYW5kIGRlYWN0aXZhdGUgc3RyaW5nc0FzRmFjdG9yc1xubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHNmKVxub3B0aW9ucyhzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpXG5gYGAifQ== -->
+<pre class="r"><code># Load two necessary packages and deactivate stringsAsFactors
+library(tidyverse)
+library(sf)
+options(stringsAsFactors = FALSE)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<div id="first-create-three-2x2-polygons" class="section level3">
-<h3>First create three 2x2 polygons:</h3>
+<div id="first-create-three-2x2-polygons-spaced-2-units-apart" class="section level3">
+<h3>First create three 2x2 polygons spaced 2 units apart:</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYjAgPC0gc3RfcG9seWdvbihsaXN0KHJiaW5kKGMoLTEsLTEpLCBjKDEsLTEpLCBjKDEsMSksIGMoLTEsMSksIGMoLTEsLTEpKSkpXG5iMSA8LSBiMCArIDJcbmIyIDwtIGIwICsgYygwLCAyKVxuYGBgIn0= -->
@@ -1815,9 +1815,12 @@ ggplot() +
 <h3>The easiest way to link polygon attributes to the point locations is using <code>st_join</code>, then output in a pretty funky plot:</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9pbnRzX3dpdGhfcG9seWdvbklEIDwtIHN0X2pvaW4ocG9pbnRzX3NmLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcG9seWdvbnNfc2YpICU+JSBcbiAgbXV0YXRlKHBvaW50X3BvbHlfaWQgPSBwYXN0ZShwb2ludF9pZCwgcG9seWdvbl9pZCwgc2VwID0gJyBpbiAnKSlcblxuZ2dwbG90KCkgK1xuICBnZW9tX3NmKGFlcyhmaWxsID0gcG9seWdvbl9pZCksIGRhdGEgPSBwb2x5Z29uc19zZikgK1xuICBnZW9tX3NmX2xhYmVsKGFlcyhsYWJlbCA9IHBvaW50X3BvbHlfaWQpLCBkYXRhID0gcG9pbnRzX3dpdGhfcG9seWdvbklEKSArXG4gIGxhYnModGl0bGUgPSAnRXhhbXBsZSBwb2x5Z29ucyBhbmQgc2FtcGxlIHBvaW50cyBhcyBsYWJlbHMnKVxuYGBgIn0= -->
-<pre class="r"><code>points_with_polygonID &lt;- st_join(points_sf,
-                                 polygons_sf) %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9pbnRzX3dpdGhfcG9seWdvbklEIDwtIHBvaW50c19zZiAlPiUgXG4gICMgZGVmYXVsdCBqb2luIHVzZXMgc3RfaW50ZXJzZWN0IHRvIGlkZW50aWZ5IG1hdGNoaW5nIGZlYXR1cmVzXG4gIHN0X2pvaW4ocG9seWdvbnNfc2YpICU+JSBcbiAgIyBzdF93aXRoaW4gd291bGQgYWxzbyB3b3JrIGZvciBsaW5raW5nIHBvaW50cyB0byBwb2x5Z29uc1xuICAjc3Rfam9pbihwb2x5Z29uc19zZiwgam9pbiA9IHN0X3dpdGhpbikgJT4lIFxuICBtdXRhdGUocG9pbnRfcG9seV9pZCA9IHBhc3RlKHBvaW50X2lkLCBwb2x5Z29uX2lkLCBzZXAgPSAnIGluICcpKVxuXG5nZ3Bsb3QoKSArXG4gIGdlb21fc2YoYWVzKGZpbGwgPSBwb2x5Z29uX2lkKSwgZGF0YSA9IHBvbHlnb25zX3NmKSArXG4gIGdlb21fc2ZfbGFiZWwoYWVzKGxhYmVsID0gcG9pbnRfcG9seV9pZCksIGRhdGEgPSBwb2ludHNfd2l0aF9wb2x5Z29uSUQpICtcbiAgbGFicyh0aXRsZSA9ICdFeGFtcGxlIHBvbHlnb25zIGFuZCBzYW1wbGUgcG9pbnRzIGFzIGxhYmVscycpXG5gYGAifQ== -->
+<pre class="r"><code>points_with_polygonID &lt;- points_sf %&gt;% 
+  # default join uses st_intersect to identify matching features
+  st_join(polygons_sf) %&gt;% 
+  # st_within would also work for linking points to polygons
+  #st_join(polygons_sf, join = st_within) %&gt;% 
   mutate(point_poly_id = paste(point_id, polygon_id, sep = &#39; in &#39;))
 
 ggplot() +
@@ -1830,10 +1833,30 @@ ggplot() +
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="finally-how-many-points-are-within-each-polygon" class="section level3">
+<h3>finally, how many points are within each polygon?</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucG9pbnRzX3dpdGhfcG9seWdvbklEICU+JSBcbiAgIyBzaW5jZSB0aGlzIGlzIGEgdGFibGUgc3VtbWFyeSwgbm90IGEgc3BhdGlhbCBvbmUsIHdlIG5lZWQgdG8gZHJvcCBzcGF0aWFsIGluZm9cbiAgc3RfZHJvcF9nZW9tZXRyeSgpICU+JSBcbiAgY291bnQocG9seWdvbl9pZClcbmBgYCJ9 -->
+<pre class="r"><code>points_with_polygonID %&gt;% 
+  # since this is a table summary, not a spatial one, we need to drop spatial info
+  st_drop_geometry() %&gt;% 
+  count(polygon_id)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6MiwibnJvdyI6NH0sInJkZiI6Ikg0c0lBQUFBQUFBQUJsMVAyd3JDTUF5TjNVVldVRVQvWTZEaUIzajVBUEhKdDFGMVNxRzJZeXVvYjM2NHFPbldnTGFRNXVRMEo2ZlpiZlp6dnVjQUVFR1VNb2dTaEpDdXQ5UFpZZ1lRTTZ4NkVFUG04aDI3SmdnY09jS0k2V0ZKWUVWZ2pWZjJ3WU41MExZNmh5N1NMdi9OVHJTNGxvMmZ5enpKSzZNZUY2TUxlYUs1T3RCbHRibmxwSFZHN0lrWCtyNUNnNk1TRFJrUXlVL0Npdnhjb3g2cmR5RHBtOHBLbzFIRTNOWkpJTzdWQVRHdWpOUzJLYVF1L01lZEgyODd1alB3T1A3QnJITmxIejh0OGRQU1VsK2tMdW43U2h4SzVZc2hMdDN1bkZjMU90SXl5RGE1TlZaUUh6OGFSVXk3SHJ5L0F3TGRDZkFCQUFBPSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["polygon_id"],"name":[1],"type":["chr"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"A","2":"3"},{"1":"B","2":"3"},{"1":"C","2":"6"},{"1":"NA","2":"3"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[4]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBvaW50IHRvIHBvbHlnb24gc3BhdGlhbCBqb2luIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KRXhhbXBsZXMgaGVyZSBwYXJ0aWFsbHkgYWRhcHRlZCBmcm9tIG9uZSBvZiB0aGUgdmlnbmV0dGVzIGluIHRoZSBgc2ZgIHBhY2thZ2U6IFszLiBNYW5pcHVsYXRpbmcgU2ltcGxlIEZlYXR1cmUgR2VvbWV0cmllc10oaHR0cHM6Ly9yLXNwYXRpYWwuZ2l0aHViLmlvL3NmL2FydGljbGVzL3NmMy5odG1sKQ0KDQoNCmBgYHtyIHNldHVwLCByZXN1bHRzPSdoaWRlJ30NCiMgTG9hZCB0d28gbmVjZXNzYXJ5IHBhY2thZ2VzDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoc2YpDQpgYGANCg0KIyMjIEZpcnN0IGNyZWF0ZSB0aHJlZSAyeDIgcG9seWdvbnM6DQpgYGB7ciBtYWtlX3BvbHlnb25zfQ0KYjAgPC0gc3RfcG9seWdvbihsaXN0KHJiaW5kKGMoLTEsLTEpLCBjKDEsLTEpLCBjKDEsMSksIGMoLTEsMSksIGMoLTEsLTEpKSkpDQpiMSA8LSBiMCArIDINCmIyIDwtIGIwICsgYygwLCAyKQ0KYGBgDQoNCiMjIyBDb21iaW5lIHRoZW0gaW50byBhbiBzZiBkYXRhLmZyYW1lL3RpYmJsZSwgZ2l2ZSB0aGVtIGFuIGlkZW50aWZpZXIgY29sdW1uIGFuZCBwbG90IHRoZSByZXN1bHQ6DQpgYGB7ciBwb2x5Z29uc19zZn0NCnBvbHlnb25zX3NmIDwtIHN0X3NmKHBvbHlnb25faWQgID0gTEVUVEVSU1sxOjNdLA0KICAgICAgICAgICAgICAgICAgICAgZ2VvbWV0cnkgPSBzdF9zZmMoYjAsIGIxLCBiMikpDQoNCnBsb3QocG9seWdvbnNfc2ZbJ3BvbHlnb25faWQnXSkNCmBgYA0KDQojIyMgRHJvcCBhIGZldyBwb2ludHMgaW4gYXJlYSBjb3ZlcmVkIGJ5IHRoZXNlIHBvbHlnb25zOg0KYGBge3IgbWFrZV9wb2ludHN9DQpzZXQuc2VlZCgxMDApDQpwb2ludHNfY29sIDwtIHN0X3NhbXBsZShzdF9hc19zZmMoc3RfYmJveChwb2x5Z29uc19zZikpLCAxNSkNCg0KcG9pbnRzX3NmIDwtIHN0X3NmKHBvaW50X2lkID0gbGV0dGVyc1sxOjE1XSwNCiAgICAgICAgICAgICAgICBnZW9tZXRyeSA9IHBvaW50c19jb2wpDQoNCmdncGxvdCgpICsNCiAgZ2VvbV9zZihhZXMoZmlsbCA9IHBvbHlnb25faWQpLCBkYXRhID0gcG9seWdvbnNfc2YpICsNCiAgZ2VvbV9zZl9sYWJlbChhZXMobGFiZWwgPSBwb2ludF9pZCksIGRhdGEgPSBwb2ludHNfc2YpICsNCiAgbGFicyh0aXRsZSA9ICdFeGFtcGxlIHBvbHlnb25zIGFuZCBzYW1wbGUgcG9pbnRzIGFzIGxhYmVscycpDQpgYGANCg0KIyMjIFRoZSBlYXNpZXN0IHdheSB0byBsaW5rIHBvbHlnb24gYXR0cmlidXRlcyB0byB0aGUgcG9pbnQgbG9jYXRpb25zIGlzIHVzaW5nIGBzdF9qb2luYCwgdGhlbiBvdXRwdXQgaW4gYSBwcmV0dHkgZnVua3kgcGxvdDoNCmBgYHtyIHJ1bl9qb2lufQ0KcG9pbnRzX3dpdGhfcG9seWdvbklEIDwtIHN0X2pvaW4ocG9pbnRzX3NmLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcG9seWdvbnNfc2YpICU+JSANCiAgbXV0YXRlKHBvaW50X3BvbHlfaWQgPSBwYXN0ZShwb2ludF9pZCwgcG9seWdvbl9pZCwgc2VwID0gJyBpbiAnKSkNCg0KZ2dwbG90KCkgKw0KICBnZW9tX3NmKGFlcyhmaWxsID0gcG9seWdvbl9pZCksIGRhdGEgPSBwb2x5Z29uc19zZikgKw0KICBnZW9tX3NmX2xhYmVsKGFlcyhsYWJlbCA9IHBvaW50X3BvbHlfaWQpLCBkYXRhID0gcG9pbnRzX3dpdGhfcG9seWdvbklEKSArDQogIGxhYnModGl0bGUgPSAnRXhhbXBsZSBwb2x5Z29ucyBhbmQgc2FtcGxlIHBvaW50cyBhcyBsYWJlbHMnKQ0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBvaW50IHRvIHBvbHlnb24gc3BhdGlhbCBqb2luIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KRXhhbXBsZXMgaGVyZSBwYXJ0aWFsbHkgYWRhcHRlZCBmcm9tIG9uZSBvZiB0aGUgdmlnbmV0dGVzIGluIHRoZSBgc2ZgIHBhY2thZ2U6IFszLiBNYW5pcHVsYXRpbmcgU2ltcGxlIEZlYXR1cmUgR2VvbWV0cmllc10oaHR0cHM6Ly9yLXNwYXRpYWwuZ2l0aHViLmlvL3NmL2FydGljbGVzL3NmMy5odG1sKQ0KDQpHb2FsOiB1c2UgYHNmOjpzdF9qb2luYCB0byBhdHRhY2ggcG9seWdvbiBpbmZvIHRvIHBvaW50cyBsb2NhdGVkIGluc2lkZQ0KDQoNCmBgYHtyIHNldHVwLCByZXN1bHRzPSdoaWRlJ30NCiMgTG9hZCB0d28gbmVjZXNzYXJ5IHBhY2thZ2VzIGFuZCBkZWFjdGl2YXRlIHN0cmluZ3NBc0ZhY3RvcnMNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCm9wdGlvbnMoc3RyaW5nc0FzRmFjdG9ycyA9IEZBTFNFKQ0KYGBgDQoNCiMjIyBGaXJzdCBjcmVhdGUgdGhyZWUgMngyIHBvbHlnb25zIHNwYWNlZCAyIHVuaXRzIGFwYXJ0Og0KYGBge3IgbWFrZV9wb2x5Z29uc30NCmIwIDwtIHN0X3BvbHlnb24obGlzdChyYmluZChjKC0xLC0xKSwgYygxLC0xKSwgYygxLDEpLCBjKC0xLDEpLCBjKC0xLC0xKSkpKQ0KYjEgPC0gYjAgKyAyDQpiMiA8LSBiMCArIGMoMCwgMikNCmBgYA0KDQojIyMgQ29tYmluZSB0aGVtIGludG8gYW4gc2YgZGF0YS5mcmFtZS90aWJibGUsIGdpdmUgdGhlbSBhbiBpZGVudGlmaWVyIGNvbHVtbiBhbmQgcGxvdCB0aGUgcmVzdWx0Og0KYGBge3IgcG9seWdvbnNfc2Z9DQpwb2x5Z29uc19zZiA8LSBzdF9zZihwb2x5Z29uX2lkICA9IExFVFRFUlNbMTozXSwNCiAgICAgICAgICAgICAgICAgICAgIGdlb21ldHJ5ID0gc3Rfc2ZjKGIwLCBiMSwgYjIpKQ0KDQpwbG90KHBvbHlnb25zX3NmWydwb2x5Z29uX2lkJ10pDQpgYGANCg0KIyMjIERyb3AgYSBmZXcgcG9pbnRzIGluIGFyZWEgY292ZXJlZCBieSB0aGVzZSBwb2x5Z29uczoNCmBgYHtyIG1ha2VfcG9pbnRzfQ0Kc2V0LnNlZWQoMTAwKQ0KcG9pbnRzX2NvbCA8LSBzdF9zYW1wbGUoc3RfYXNfc2ZjKHN0X2Jib3gocG9seWdvbnNfc2YpKSwgMTUpDQoNCnBvaW50c19zZiA8LSBzdF9zZihwb2ludF9pZCA9IGxldHRlcnNbMToxNV0sDQogICAgICAgICAgICAgICAgZ2VvbWV0cnkgPSBwb2ludHNfY29sKQ0KDQpnZ3Bsb3QoKSArDQogIGdlb21fc2YoYWVzKGZpbGwgPSBwb2x5Z29uX2lkKSwgZGF0YSA9IHBvbHlnb25zX3NmKSArDQogIGdlb21fc2ZfbGFiZWwoYWVzKGxhYmVsID0gcG9pbnRfaWQpLCBkYXRhID0gcG9pbnRzX3NmKSArDQogIGxhYnModGl0bGUgPSAnRXhhbXBsZSBwb2x5Z29ucyBhbmQgc2FtcGxlIHBvaW50cyBhcyBsYWJlbHMnKQ0KYGBgDQoNCiMjIyBUaGUgZWFzaWVzdCB3YXkgdG8gbGluayBwb2x5Z29uIGF0dHJpYnV0ZXMgdG8gdGhlIHBvaW50IGxvY2F0aW9ucyBpcyB1c2luZyBgc3Rfam9pbmAsIHRoZW4gb3V0cHV0IGluIGEgcHJldHR5IGZ1bmt5IHBsb3Q6DQpgYGB7ciBydW5fam9pbn0NCnBvaW50c193aXRoX3BvbHlnb25JRCA8LSBwb2ludHNfc2YgJT4lIA0KICAjIGRlZmF1bHQgam9pbiB1c2VzIHN0X2ludGVyc2VjdCB0byBpZGVudGlmeSBtYXRjaGluZyBmZWF0dXJlcw0KICBzdF9qb2luKHBvbHlnb25zX3NmKSAlPiUgDQogICMgc3Rfd2l0aGluIHdvdWxkIGFsc28gd29yayBmb3IgbGlua2luZyBwb2ludHMgdG8gcG9seWdvbnMNCiAgI3N0X2pvaW4ocG9seWdvbnNfc2YsIGpvaW4gPSBzdF93aXRoaW4pICU+JSANCiAgbXV0YXRlKHBvaW50X3BvbHlfaWQgPSBwYXN0ZShwb2ludF9pZCwgcG9seWdvbl9pZCwgc2VwID0gJyBpbiAnKSkNCg0KZ2dwbG90KCkgKw0KICBnZW9tX3NmKGFlcyhmaWxsID0gcG9seWdvbl9pZCksIGRhdGEgPSBwb2x5Z29uc19zZikgKw0KICBnZW9tX3NmX2xhYmVsKGFlcyhsYWJlbCA9IHBvaW50X3BvbHlfaWQpLCBkYXRhID0gcG9pbnRzX3dpdGhfcG9seWdvbklEKSArDQogIGxhYnModGl0bGUgPSAnRXhhbXBsZSBwb2x5Z29ucyBhbmQgc2FtcGxlIHBvaW50cyBhcyBsYWJlbHMnKQ0KYGBgDQoNCiMjIyBmaW5hbGx5LCBob3cgbWFueSBwb2ludHMgYXJlIHdpdGhpbiBlYWNoIHBvbHlnb24/DQpgYGB7ciBwb2ludHNfaW5fcG9seWdvbnN9DQpwb2ludHNfd2l0aF9wb2x5Z29uSUQgJT4lIA0KICAjIHNpbmNlIHRoaXMgaXMgYSB0YWJsZSBzdW1tYXJ5LCBub3QgYSBzcGF0aWFsIG9uZSwgd2UgbmVlZCB0byBkcm9wIHNwYXRpYWwgaW5mbw0KICBzdF9kcm9wX2dlb21ldHJ5KCkgJT4lIA0KICBjb3VudChwb2x5Z29uX2lkKQ0KYGBgDQoNCg==</div>
 
 
 
