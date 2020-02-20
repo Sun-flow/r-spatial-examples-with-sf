@@ -1,0 +1,55 @@
+---
+title: "Point to polygon spatial join"
+output: html_notebook
+---
+
+Examples here partially adapted from one of the vignettes in the `sf` package: [3. Manipulating Simple Feature Geometries](https://r-spatial.github.io/sf/articles/sf3.html)
+
+
+```{r setup, results='hide'}
+# Load two necessary packages
+library(tidyverse)
+library(sf)
+```
+
+### First create three 2x2 polygons:
+```{r make_polygons}
+b0 <- st_polygon(list(rbind(c(-1,-1), c(1,-1), c(1,1), c(-1,1), c(-1,-1))))
+b1 <- b0 + 2
+b2 <- b0 + c(0, 2)
+```
+
+### Combine them into an sf data.frame/tibble, give them an identifier column and plot the result:
+```{r polygons_sf}
+polygons_sf <- st_sf(polygon_id  = LETTERS[1:3],
+                     geometry = st_sfc(b0, b1, b2))
+
+plot(polygons_sf['polygon_id'])
+```
+
+### Drop a few points in area covered by these polygons:
+```{r make_points}
+set.seed(100)
+points_col <- st_sample(st_as_sfc(st_bbox(polygons_sf)), 15)
+
+points_sf <- st_sf(point_id = letters[1:15],
+                geometry = points_col)
+
+ggplot() +
+  geom_sf(aes(fill = polygon_id), data = polygons_sf) +
+  geom_sf_label(aes(label = point_id), data = points_sf) +
+  labs(title = 'Example polygons and sample points as labels')
+```
+
+### The easiest way to link polygon attributes to the point locations is using `st_join`, then output in a pretty funky plot:
+```{r run_join}
+points_with_polygonID <- st_join(points_sf,
+                                 polygons_sf) %>% 
+  mutate(point_poly_id = paste(point_id, polygon_id, sep = ' in '))
+
+ggplot() +
+  geom_sf(aes(fill = polygon_id), data = polygons_sf) +
+  geom_sf_label(aes(label = point_poly_id), data = points_with_polygonID) +
+  labs(title = 'Example polygons and sample points as labels')
+```
+
