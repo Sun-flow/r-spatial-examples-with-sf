@@ -5,14 +5,17 @@ output: html_notebook
 
 Examples here partially adapted from one of the vignettes in the `sf` package: [3. Manipulating Simple Feature Geometries](https://r-spatial.github.io/sf/articles/sf3.html)
 
+Goal: use `sf::st_join` to attach polygon info to points located inside
+
 
 ```{r setup, results='hide'}
-# Load two necessary packages
+# Load two necessary packages and deactivate stringsAsFactors
 library(tidyverse)
 library(sf)
+options(stringsAsFactors = FALSE)
 ```
 
-### First create three 2x2 polygons:
+### First create three 2x2 polygons spaced 2 units apart:
 ```{r make_polygons}
 b0 <- st_polygon(list(rbind(c(-1,-1), c(1,-1), c(1,1), c(-1,1), c(-1,-1))))
 b1 <- b0 + 2
